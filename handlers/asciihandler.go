@@ -32,7 +32,6 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Process each line of input text
 		for _, words := range textLines {
-			//words := strings.Split(line, " ")
 			for i := 0; i < 8; i++ {
 				for _, char := range words {
 					asciiArt += lines[int(char-' ')*9+1+i] + " "
