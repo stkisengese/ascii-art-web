@@ -31,19 +31,15 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		asciiArt := ""
 
 		// Process each line of input text
-		for _, line := range textLines {
-			words := strings.Split(line, " ")
-			for _, word := range words {
-				if word != "" {
-					for i := 0; i < 8; i++ {
-						for _, char := range word {
-							asciiArt += lines[int(char-' ')*9+1+i] + " "
-						}
-						asciiArt += "\n"
-					}
-					asciiArt += "\n"
+		for _, words := range textLines {
+			//words := strings.Split(line, " ")
+			for i := 0; i < 8; i++ {
+				for _, char := range words {
+					asciiArt += lines[int(char-' ')*9+1+i] + " "
 				}
+				asciiArt += "\n"
 			}
+			asciiArt += "\n"
 		}
 
 		tmpl := template.Must(template.ParseFiles("templates/ascii-art.html"))
