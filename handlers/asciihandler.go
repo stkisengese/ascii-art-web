@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"net/http"
 	"html/template"
+	"net/http"
+	"os"
 	"strings"
-	"io/ioutil"
 )
 
 func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +19,7 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		lines, err := readBanner(banner)
-		if err!= nil {
+		if err != nil {
 			http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
 			return
 		}
@@ -34,7 +34,7 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		for _, line := range textLines {
 			words := strings.Split(line, " ")
 			for _, word := range words {
-				if word!= "" {
+				if word != "" {
 					for i := 0; i < 8; i++ {
 						for _, char := range word {
 							asciiArt += lines[int(char-' ')*9+1+i] + " "
@@ -48,13 +48,13 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 
 		tmpl := template.Must(template.ParseFiles("templates/ascii-art.html"))
 		err = tmpl.Execute(w, struct {
-			Text string
+			Text     string
 			AsciiArt string
 		}{
-			Text: text,
+			Text:     text,
 			AsciiArt: asciiArt,
 		})
-		if err!= nil {
+		if err != nil {
 			http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
 		}
 	default:
@@ -62,11 +62,10 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func readBanner(banner string) ([]string, error) {
-	path := "banners/" + banner + ".txt"
-	data, err := ioutil.ReadFile(path)
-	if err!= nil {
+	path := "banners/" + banner
+	data, err := os.ReadFile(path)
+	if err != nil {
 		return nil, err
 	}
 	lines := strings.Split(string(data), "\n")
