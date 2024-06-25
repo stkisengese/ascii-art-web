@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+// AsciiArtHandler handles POST requests, process input text, 
+// generate ASCII art and render an HTML template with result.
 func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
@@ -56,7 +58,7 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error 405: Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
-
+// ReadBanner reads banner file content and returns splited content as a slice of strings.
 func readBanner(banner string) ([]string, error) {
 	path := "banners/" + banner
 	data, err := os.ReadFile(path)
