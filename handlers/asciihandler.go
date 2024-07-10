@@ -1,13 +1,20 @@
 package handlers
 
 import (
+	"bytes"
 	"html/template"
 	"net/http"
 	"os"
 	"strings"
 )
 
-// AsciiArtHandler handles POST requests, process input text, 
+type AsciiArtData struct {
+	Text     string
+	AsciiArt string
+	Banner   string
+}
+
+// AsciiArtHandler handles POST requests, process input text,
 // generate ASCII art and render an HTML template with result.
 func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -29,28 +36,35 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		// Split the input text into multiple lines
 		textLines := strings.Split(text, "\r\n")
 
-		// Initialize the ascii art output
-		asciiArt := ""
-
-		// Process each line of input text
+		var asciiArtBuffer bytes.Buffer
 		for _, words := range textLines {
 			for i := 0; i < 8; i++ {
 				for _, char := range words {
-					asciiArt += lines[int(char-' ')*9+1+i] + " "
+					asciiArtBuffer.WriteString(lines[int(char-' ')*9+1+i] + " ")
 				}
-				asciiArt += "\n"
+				asciiArtBuffer.WriteString("\n")
 			}
-			asciiArt += "\n"
+			asciiArtBuffer.WriteString("\n")
 		}
 
+		asciiArt := asciiArtBuffer.String()
+
+		// Initialize the ascii art output
+		// asciiArt := ""
+
+		// // Process each line of input text
+		// for _, words := range textLines {
+		// 	for i := 0; i < 8; i++ {
+		// 		for _, char := range words {
+		// 			asciiArt += lines[int(char-' ')*9+1+i] + " "
+		// 		}
+		// 		asciiArt += "\n"
+		// 	}
+		// 	asciiArt += "\n"
+		// }
+		data := AsciiArtData{Text: text, AsciiArt: asciiArt, Banner: banner}
 		tmpl := template.Must(template.ParseFiles("templates/ascii-art.html"))
-		err = tmpl.Execute(w, struct {
-			Text     string
-			AsciiArt string
-		}{
-			Text:     text,
-			AsciiArt: asciiArt,
-		})
+		err = tmpl.Execute(w, data)
 		if err != nil {
 			http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
 		}
@@ -58,6 +72,7 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error 405: Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
+
 // ReadBanner reads banner file content and returns splited content as a slice of strings.
 func readBanner(banner string) ([]string, error) {
 	path := "banners/" + banner
