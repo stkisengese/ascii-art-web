@@ -50,7 +50,7 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		asciiArt := asciiArtBuffer.String()
 
 		data := AsciiArtData{Text: text, AsciiArt: asciiArt, Banner: banner}
-		tmpl := template.Must(template.ParseFiles("templates/ascii-art.html"))
+		tmpl := template.Must(template.ParseFiles("../templates/ascii-art.html"))
 		err = tmpl.Execute(w, data)
 		if err != nil {
 			http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
@@ -62,7 +62,7 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 
 // ReadBanner reads banner file content and returns splited content as a slice of strings.
 func readBanner(banner string) ([]string, error) {
-	path := "banners/" + banner
+	path := "../banners/" + banner
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
