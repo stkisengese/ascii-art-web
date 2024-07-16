@@ -49,19 +49,6 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 
 		asciiArt := asciiArtBuffer.String()
 
-		// Initialize the ascii art output
-		// asciiArt := ""
-
-		// // Process each line of input text
-		// for _, words := range textLines {
-		// 	for i := 0; i < 8; i++ {
-		// 		for _, char := range words {
-		// 			asciiArt += lines[int(char-' ')*9+1+i] + " "
-		// 		}
-		// 		asciiArt += "\n"
-		// 	}
-		// 	asciiArt += "\n"
-		// }
 		data := AsciiArtData{Text: text, AsciiArt: asciiArt, Banner: banner}
 		tmpl := template.Must(template.ParseFiles("templates/ascii-art.html"))
 		err = tmpl.Execute(w, data)
