@@ -43,6 +43,10 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		for _, words := range textLines {
 			for i := 0; i < 8; i++ {
 				for _, char := range words {
+					if !(char >= 32 && char <= 126) {
+						http.Error(w, "Error 400: Bad request", http.StatusBadRequest)
+						return
+					}
 					asciiArtBuffer.WriteString(lines[int(char-' ')*9+1+i] + " ")
 				}
 				asciiArtBuffer.WriteString("\n")
