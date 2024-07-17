@@ -23,16 +23,27 @@ The program reads user input, processes it, and generates ASCII art based on the
 
 1.  Clone this repository to your local machine.
 ```go
-    https://learn.zone01kisumu.ke/git/skisenge/ascii-art-web
+    git clone https://learn.zone01kisumu.ke/git/skisenge/ascii-art-web
 ```
 2.  Ensure you have Go installed.
 3.  Navigate to the project directory.
 4.  Run the following command to start the server:
-```go
+```bash
+    cd asciiwebproject
     go run main.go
 ```
 5.  Open a web browser and visit `http://localhost:8080`.
-6.  Enter your text and choose a banner to see the generated ASCII art.
+    - This usage is also applicable:
+    ```bash
+    go run main.go [port]
+    ```
+      
+    - For example,
+    ```bash
+    go run main.go 8000
+    ```
+6.  Enter your text and choose a banner to see the generated ASCII art by clicking on the `Generate Ascii Art` button
+7.  Click `Back to HomePage` to navigate back to test other entries.
 
 ## Authors
 - [@mombewa](https://learn.zone01kisumu.ke/git/mombewa)
