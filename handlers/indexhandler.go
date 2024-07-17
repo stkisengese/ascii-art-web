@@ -20,7 +20,12 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Render the template for the root path
-	tmpl := template.Must(template.ParseFiles("../templates/index.html"))
+	tmpl, err1 := (template.ParseFiles("../templates/index.html"))
+	if err1 != nil {
+		http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
+		return
+	}
+
 	err := tmpl.Execute(w, nil)
 	if err != nil {
 		http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
