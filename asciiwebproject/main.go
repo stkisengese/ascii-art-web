@@ -9,6 +9,10 @@ import (
 )
 
 func main() {
+	if len(os.Args) > 2 {
+		fmt.Println("Usage: go run main.go [port]")
+		os.Exit(1)
+	}
 	// Set up HTTP handlers
 	http.HandleFunc("/", handler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../static"))))
@@ -18,7 +22,7 @@ func main() {
 	if len(os.Args) > 1 {
 		port = os.Args[1]
 	}
-	fmt.Printf("Starting server on port %s...\n", port)
+	fmt.Printf("Starting server on http://localhost:%s ...\n", port)
 
 	// start the server
 	err := http.ListenAndServe(":"+port, nil)
