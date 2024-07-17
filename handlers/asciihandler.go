@@ -22,14 +22,17 @@ type AsciiArtData struct {
 func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
+		// Get input text and banner from request.
 		text := r.FormValue("text")
 		banner := r.FormValue("banner")
 
+		// Validate input
 		if text == "" || banner == "" {
 			http.Error(w, "Error 400: Bad request", http.StatusBadRequest)
 			return
 		}
 
+		// Read the banner file and generate ASCII art
 		lines, err := readBanner(banner)
 		if err != nil {
 			http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
@@ -39,6 +42,7 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		// Split the input text into multiple lines
 		textLines := strings.Split(text, "\r\n")
 
+		// Process the input text and generate ASII art.
 		var asciiArtBuffer bytes.Buffer
 		for _, words := range textLines {
 			for i := 0; i < 8; i++ {
@@ -56,8 +60,14 @@ func AsciiArtHandler(w http.ResponseWriter, r *http.Request) {
 
 		asciiArt := asciiArtBuffer.String()
 
+		// Render the ASCII art template
 		data := AsciiArtData{Text: text, AsciiArt: asciiArt, Banner: banner}
-		tmpl := template.Must(template.ParseFiles("../templates/ascii-art.html"))
+		tmpl, err := template.ParseFiles("../templates/ascii-art.html")
+		if err != nil {
+			http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
+			return
+		}
+
 		err = tmpl.Execute(w, data)
 		if err != nil {
 			http.Error(w, "Error 500: Internal server error", http.StatusInternalServerError)
@@ -74,8 +84,9 @@ func readBanner(banner string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	hashFile := checkSum(data)
 
+	// Check file's integrity.
+	hashFile := checkSum(data)
 	hashShadow := "26b94d0b134b77e9fd23e0360bfd81740f80fb7f6541d1d8c5d85e73ee550f73"
 	hashStandard := "e194f1033442617ab8a78e1ca63a2061f5cc07a3f05ac226ed32eb9dfd22a6bf"
 	hashThinkertoy := "092d0cde973bfbb02522f18e00e8612e269f53bac358bb06f060a44abd0dbc52"
@@ -88,6 +99,7 @@ func readBanner(banner string) ([]string, error) {
 	return lines, nil
 }
 
+// CheckSum calculates the SHA-256 checksum of a given byte slice and returns it as a hexadecimal string.
 func checkSum(data []byte) string {
 	hash := sha256.Sum256(data)
 	return hex.EncodeToString(hash[:])
