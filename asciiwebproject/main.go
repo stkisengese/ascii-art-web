@@ -1,15 +1,16 @@
 package main
 
 import (
-	"ascii/handlers"
 	"fmt"
 	"net/http"
 	"os"
+
+	"ascii/handlers"
 )
 
 func main() {
 	http.HandleFunc("/", handler)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../static"))))
 
 	port := "8080"
 	if len(os.Args) > 1 {
@@ -34,5 +35,4 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.NotFound(w, r)
 	}
-
 }
