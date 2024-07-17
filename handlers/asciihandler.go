@@ -2,6 +2,9 @@ package handlers
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -67,6 +70,21 @@ func readBanner(banner string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	hashFile := checkSum(data)
+
+	hashShadow := "26b94d0b134b77e9fd23e0360bfd81740f80fb7f6541d1d8c5d85e73ee550f73"
+	hashStandard := "e194f1033442617ab8a78e1ca63a2061f5cc07a3f05ac226ed32eb9dfd22a6bf"
+	hashThinkertoy := "092d0cde973bfbb02522f18e00e8612e269f53bac358bb06f060a44abd0dbc52"
+
+	if hashFile != hashShadow && hashFile != hashStandard && hashFile != hashThinkertoy {
+		return nil, fmt.Errorf("file corrupted")
+	}
+
 	lines := strings.Split(string(data), "\n")
 	return lines, nil
+}
+
+func checkSum(data []byte) string {
+	hash := sha256.Sum256(data)
+	return hex.EncodeToString(hash[:])
 }
